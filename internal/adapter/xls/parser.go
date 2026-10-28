@@ -33,7 +33,6 @@ func (p *parser) Load(source string) ([]domain.VerificationRecord, error) {
 
 	file, err := excelize.OpenFile(source)
 	if err != nil {
-		p.logger.Println(err)
 		return nil, err
 	}
 
@@ -96,6 +95,27 @@ func getRecord(row []string, opts ParseOptions) (domain.VerificationRecord, erro
 	}
 
 	res.ValidUntil, _ = parseDate(row[5])
+	
+	if opts.ParseAmbient {
+		temp, err := strconv.ParseFloat(row[8], 64)
+		if err != nil {
+			return domain.VerificationRecord{}, ParseError{"Невозможно преобразовать температуру во float: " + row[8]}
+		}
+
+		humidity, err := strconv.ParseFloat(row[9], 64)
+		if err != nil {
+			return domain.VerificationRecord{}, ParseError{"Невозможно преобразовать влажность во float: " + row[9]}
+		}
+
+		pressure, err := strconv.ParseFloat(row[10], 64)
+		if err != nil {
+			return domain.VerificationRecord{}, ParseError{"Невозможно преобразовать атм.давление во float: " + row[10]}
+		}
+
+		res.Temperature = temp
+		res.Humidity = humidity
+		res.Pressure = pressure
+	}
 
 	return res, nil
 }

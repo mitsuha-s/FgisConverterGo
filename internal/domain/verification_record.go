@@ -10,7 +10,7 @@ type VerificationRecord struct {
 	ValidUntil       time.Time
 	Verifier         string
 	TestDeviceNum    string
-	Temperature      string
-	Humidity         string
-	Pressure         string
+	Temperature      float64
+	Humidity         float64
+	Pressure         float64
 }
