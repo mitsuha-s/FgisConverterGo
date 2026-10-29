@@ -24,7 +24,7 @@ type Meter struct {
 }
 
 type TestDevice struct {
-	Number string
+	Number           string
 	Stopwatch        MeasuringInstrument
 	Thermometer      MeasuringInstrument
 	Thermohygrometer MeasuringInstrument

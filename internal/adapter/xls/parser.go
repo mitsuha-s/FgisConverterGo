@@ -94,8 +94,11 @@ func getRecord(row []string, opts ParseOptions) (domain.VerificationRecord, erro
 		return domain.VerificationRecord{}, err
 	}
 
-	res.ValidUntil, _ = parseDate(row[5])
-	
+	res.ValidUntil, err = parseDate(row[5])
+	if err == nil {
+		res.ValidUntil = normalizeValidUntil(res.VerificationDate, res.ValidUntil)
+	}
+
 	if opts.ParseAmbient {
 		temp, err := strconv.ParseFloat(row[8], 64)
 		if err != nil {
@@ -137,4 +140,8 @@ func parseDate(dateString string) (time.Time, error) {
 	}
 
 	return time.Time{}, ParseError{"Некорректная дата: " + dateString}
+}
+
+func normalizeValidUntil(verification time.Time, until time.Time) time.Time {
+	return verification.AddDate(until.Year()-verification.Year(), 0, -1)
 }

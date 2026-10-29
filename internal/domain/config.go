@@ -4,13 +4,13 @@ type SourceAmbient int
 
 const (
 	AmbientModEmpty SourceAmbient = iota
-	AmbientModFile 
-	AmbientModRandom 
+	AmbientModFile
+	AmbientModRandom
 )
 
 type Config struct {
-	SignCipher string
-	Meters map[string]string
+	SignCipher  string
+	Meters      map[string]string
 	TestDevices map[string]TestDevice
-	AmbientMod SourceAmbient
+	AmbientMod  SourceAmbient
 }
