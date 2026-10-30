@@ -36,6 +36,8 @@ func (p *parser) Load(source string) ([]domain.VerificationRecord, error) {
 		return nil, err
 	}
 
+	defer file.Close()
+	
 	for _, sheet := range file.GetSheetList() {
 		rows, _ := file.GetRows(sheet)
 		for _, row := range rows {

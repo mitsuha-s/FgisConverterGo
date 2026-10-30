@@ -3,14 +3,14 @@ package domain
 type SourceAmbient int
 
 const (
-	AmbientModEmpty SourceAmbient = iota
-	AmbientModFile
-	AmbientModRandom
+	AmbientModeEmpty SourceAmbient = iota
+	AmbientModeFile
+	AmbientModeRandom
 )
 
 type Config struct {
 	SignCipher  string
-	Meters      map[string]string
+	Mitypes     map[string]string
 	TestDevices map[string]TestDevice
-	AmbientMod  SourceAmbient
+	AmbientMode SourceAmbient
 }

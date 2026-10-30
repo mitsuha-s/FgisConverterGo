@@ -11,7 +11,7 @@ const (
 )
 
 func IsValid(record VerificationRecord, config *Config) error {
-	if _, ok := config.Meters[record.RegNum]; !ok {
+	if _, ok := config.Mitypes[record.RegNum]; !ok {
 		return errors.New("Невалидная методика поверки")
 	}
 
@@ -31,7 +31,7 @@ func IsValid(record VerificationRecord, config *Config) error {
 		return fmt.Errorf("Установка %s не найдена", record.TestDeviceNum)
 	}
 
-	if config.AmbientMod == AmbientModFile {
+	if config.AmbientMode == AmbientModeFile {
 		if record.Humidity == 0 {
 			return errors.New("Влажность не указана или равна нулю")
 		}

@@ -52,16 +52,16 @@ func (a *app) Handle(source string, loader Loader, dest string, sink Sink) error
 				Stopwatch:        a.config.TestDevices[record.TestDeviceNum].Stopwatch,
 				Thermohygrometer: a.config.TestDevices[record.TestDeviceNum].Thermohygrometer,
 			},
-			Method:     a.config.Meters[record.RegNum],
+			Method:     a.config.Mitypes[record.RegNum],
 			SignCipher: a.config.SignCipher,
 		}
 
-		switch a.config.AmbientMod {
-		case domain.AmbientModFile:
+		switch a.config.AmbientMode {
+		case domain.AmbientModeFile:
 			verification.Temperature = record.Temperature
 			verification.Humidity = record.Humidity
 			verification.Pressure = record.Pressure
-		case domain.AmbientModRandom:
+		case domain.AmbientModeRandom:
 			temp, humidity, pressure := getRandomAmbient()
 			verification.Temperature = temp
 			verification.Humidity = humidity
