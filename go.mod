@@ -2,9 +2,13 @@ module arshin
 
 go 1.26.5
 
-require github.com/xuri/excelize/v2 v2.11.0
+require (
+	github.com/gwenn/gosqlite v0.0.0-20230220182433-af75c85b9faf
+	github.com/xuri/excelize/v2 v2.11.0
+)
 
 require (
+	github.com/gwenn/yacr v0.0.0-20200110180258-a66d8c42d0ff // indirect
 	github.com/richardlehane/mscfb v1.0.7 // indirect
 	github.com/richardlehane/msoleps v1.0.6 // indirect
 	github.com/tiendc/go-deepcopy v1.7.2 // indirect

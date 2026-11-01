@@ -32,16 +32,10 @@ func (l *loader) Load(ctx context.Context) (*domain.Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	if len(miTypes) == 0 {
-		return nil, errors.New("Запрос на получение поверяемых типов СИ не вернул результата")
-	}
 
 	testDevices, err := l.loadTestDevices(ctx)
 	if err != nil {
 		return nil, err
-	}
-	if len(testDevices) == 0 {
-		return nil, errors.New("Запрос на получение поверочных установок организации не вернул результата")
 	}
 
 	return &domain.Config{
@@ -55,12 +49,15 @@ func (l *loader) Load(ctx context.Context) (*domain.Config, error) {
 func (l *loader) loadConfig(ctx context.Context) (signCipher, stringMode string, err error) {
 	query := `SELECT signcipher, ambientmode FROM config`
 
-	err = l.db.QueryRowContext(ctx, query).Scan(&signCipher, &stringMode)
+	var sign sql.NullString
+	var mode sql.NullString
+
+	err = l.db.QueryRowContext(ctx, query).Scan(&sign, &mode)
 	if err != nil {
 		return "", "", err
 	}
 
-	return signCipher, stringMode, nil
+	return sign.String, mode.String, nil
 }
 
 func (l *loader) loadMitypes(ctx context.Context) (map[string]string, error) {
@@ -110,32 +107,32 @@ func (l *loader) loadTestDevices(ctx context.Context) (map[string]domain.TestDev
 	defer rows.Close()
 
 	for rows.Next() {
-		var regnum string
-		var stopwatchregnum string
-		var stopwatchnumber string
-		var thermometerregnum string
-		var thermometernumber string
-		var thermohygrometerregnum string
-		var thermohygrometernumber string
+		var regnum sql.NullString
+		var stopwatchregnum sql.NullString
+		var stopwatchnumber sql.NullString
+		var thermometerregnum sql.NullString
+		var thermometernumber sql.NullString
+		var thermohygrometerregnum sql.NullString
+		var thermohygrometernumber sql.NullString
 
-		err = rows.Scan(query, &regnum, &stopwatchregnum, &stopwatchnumber, &thermometerregnum, &thermometernumber, &thermohygrometerregnum, &thermohygrometernumber)
+		err = rows.Scan(&regnum, &stopwatchregnum, &stopwatchnumber, &thermometerregnum, &thermometernumber, &thermohygrometerregnum, &thermohygrometernumber)
 		if err != nil {
 			return nil, err
 		}
 
-		res[regnum] = domain.TestDevice{
-			Number: regnum,
+		res[regnum.String] = domain.TestDevice{
+			Number: regnum.String,
 			Stopwatch: domain.MeasuringInstrument{
-				RegNum:         stopwatchregnum,
-				ManufactureNum: stopwatchnumber,
+				RegNum:         stopwatchregnum.String,
+				ManufactureNum: stopwatchnumber.String,
 			},
 			Thermometer: domain.MeasuringInstrument{
-				RegNum:         thermometerregnum,
-				ManufactureNum: thermometernumber,
+				RegNum:         thermometerregnum.String,
+				ManufactureNum: thermometernumber.String,
 			},
 			Thermohygrometer: domain.MeasuringInstrument{
-				RegNum:         thermohygrometerregnum,
-				ManufactureNum: thermohygrometernumber,
+				RegNum:         thermohygrometerregnum.String,
+				ManufactureNum: thermohygrometernumber.String,
 			},
 		}
 	}

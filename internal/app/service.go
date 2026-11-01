@@ -2,10 +2,14 @@ package app
 
 import (
 	"arshin/internal/domain"
+	"context"
+	"errors"
+	"fmt"
 	"log"
+	"time"
 )
 
-type Loader interface {
+type RecordsLoader interface {
 	Load(string) ([]domain.VerificationRecord, error)
 }
 
@@ -13,59 +17,43 @@ type Sink interface {
 	Send(string, []domain.Verification) error
 }
 
+type ConfigAdapter interface {
+	Load(context.Context) (*domain.Config, error)
+}
+
 type app struct {
-	config *domain.Config
-	logger *log.Logger
+	configAdapter ConfigAdapter
+	logger        *log.Logger
 }
 
-func New(config *domain.Config, logger *log.Logger) *app {
-	return &app{config: config, logger: logger}
+func New(configAdapter ConfigAdapter, logger *log.Logger) *app {
+	return &app{configAdapter: configAdapter, logger: logger}
 }
 
-func (a *app) Handle(source string, loader Loader, dest string, sink Sink) error {
+func (a *app) Handle(source string, recordsLoader RecordsLoader, dest string, sink Sink) error {
 	var res []domain.Verification
-	records, err := loader.Load(source)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	config, err := a.configAdapter.Load(ctx)
+	var configErr *domain.ErrInvalidConfig
+	if errors.As(err, &configErr) {
+		return fmt.Errorf("Не удалось загрузить конфиг: %v", err)
+	} else if err != nil {
+		return fmt.Errorf("Ошибка приложения. Не удалось загрузить конфиг")
+	}
+
+	records, err := recordsLoader.Load(source)
 	if err != nil {
 		return err
 	}
 
 	for _, record := range records {
-		if err := domain.IsValid(record, a.config); err != nil {
+		verification, err := domain.NewVerification(record, config)
+		if err != nil {
 			a.logger.Printf("Невозможно передать счетчик %s: %v", record.ManufactureNum, err)
 			continue
-		}
-
-		verification := domain.Verification{
-			Fit: record.ValidUntil.IsZero(),
-			Meter: domain.Meter{
-				RegNum:         record.RegNum,
-				ManufactureNum: record.ManufactureNum,
-				MIType:         record.MIType,
-			},
-			Owner:            "ФИЗИЧЕСКОЕ ЛИЦО",
-			VerificationDate: record.VerificationDate,
-			ValidUntil:       record.ValidUntil,
-			Verifier:         record.Verifier,
-			TestDevice: domain.TestDevice{
-				Number:           record.TestDeviceNum,
-				Thermometer:      a.config.TestDevices[record.TestDeviceNum].Thermometer,
-				Stopwatch:        a.config.TestDevices[record.TestDeviceNum].Stopwatch,
-				Thermohygrometer: a.config.TestDevices[record.TestDeviceNum].Thermohygrometer,
-			},
-			Method:     a.config.Mitypes[record.RegNum],
-			SignCipher: a.config.SignCipher,
-		}
-
-		switch a.config.AmbientMode {
-		case domain.AmbientModeFile:
-			verification.Temperature = record.Temperature
-			verification.Humidity = record.Humidity
-			verification.Pressure = record.Pressure
-		case domain.AmbientModeRandom:
-			temp, humidity, pressure := getRandomAmbient()
-			verification.Temperature = temp
-			verification.Humidity = humidity
-			verification.Pressure = pressure
 		}
 
 		res = append(res, verification)
@@ -76,9 +64,4 @@ func (a *app) Handle(source string, loader Loader, dest string, sink Sink) error
 	}
 
 	return nil
-}
-
-func getRandomAmbient() (temp float64, humidity float64, pressure float64) {
-	// TODO
-	return
 }
