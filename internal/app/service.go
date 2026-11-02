@@ -37,7 +37,7 @@ func (a *app) Handle(source string, recordsLoader RecordsLoader, dest string, si
 	defer cancel()
 
 	config, err := a.configAdapter.Load(ctx)
-	var configErr *domain.ErrInvalidConfig
+	var configErr domain.ErrInvalidData
 	if errors.As(err, &configErr) {
 		return fmt.Errorf("Не удалось загрузить конфиг: %v", err)
 	} else if err != nil {

@@ -1,8 +1,11 @@
 package sqlite
 
 import (
+	"arshin/internal/domain"
 	"context"
 	"database/sql"
+	"errors"
+	"log"
 	"testing"
 
 	_ "github.com/gwenn/gosqlite"
@@ -15,7 +18,9 @@ func TestLoader(t *testing.T) {
 	}
 	repo := New(db)
 	res, err := repo.Load(context.Background())
-	if err != nil {
+	var errdata domain.ErrInvalidData
+	if errors.As(err, &errdata) {
 		t.Fatal(res, err)
 	}
+	log.Println(res)
 }

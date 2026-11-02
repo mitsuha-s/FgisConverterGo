@@ -80,13 +80,13 @@ func getRecord(row []string, opts ParseOptions) (domain.VerificationRecord, erro
 	}
 
 	if len(row) < rowLen {
-		return domain.VerificationRecord{}, ParseError{"Не хватает полей. Ожидаются: номер строки, рег. номер, заводской номер, тип СИ, дата поверки, дата след. поверки, номер установки, поверитель" + postfix}
+		return domain.VerificationRecord{}, ParseError{"Не хватает полей. Ожидаются: номер строки, рег. номер, заводской номер, модификация типа СИ, дата поверки, дата след. поверки, номер установки, поверитель" + postfix}
 	}
 
 	res := domain.VerificationRecord{
 		RegNum:         strings.TrimSpace(row[1]),
 		ManufactureNum: strings.TrimSpace(row[2]),
-		MIType:         strings.TrimSpace(row[3]),
+		Modification:   strings.TrimSpace(row[3]),
 		Verifier:       strings.TrimSpace(row[6]),
 		TestDeviceNum:  strings.TrimSpace(row[7]),
 	}

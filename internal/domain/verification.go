@@ -9,7 +9,7 @@ type Verification struct {
 	fit              bool
 	regNum           string
 	manufactureNum   string
-	mitype           string
+	modification     string
 	owner            string
 	verificationDate time.Time
 	validUntil       time.Time
@@ -27,12 +27,12 @@ func NewVerification(record VerificationRecord, config *Config) (Verification, e
 	var fit bool
 	var temp, humidity, pressure float64
 
-	reg, err := NewRegnum(record.RegNum)
+	err := ValidateRegnum(record.RegNum)
 	if err != nil {
 		return Verification{}, err
 	}
 
-	method, ok := config.mitypes[reg]
+	method, ok := config.mitypes[record.RegNum]
 	if !ok {
 		return Verification{}, fmt.Errorf("Отсутствует в списке поверяемых типов СИ")
 	}
@@ -79,7 +79,7 @@ func NewVerification(record VerificationRecord, config *Config) (Verification, e
 		fit:              fit,
 		regNum:           record.RegNum,
 		manufactureNum:   record.ManufactureNum,
-		mitype:           record.MIType,
+		modification:     record.Modification,
 		owner:            "ФИЗИЧЕСКОЕ ЛИЦО",
 		verificationDate: record.VerificationDate,
 		validUntil:       record.ValidUntil,

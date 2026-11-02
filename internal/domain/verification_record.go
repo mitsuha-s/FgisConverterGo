@@ -7,7 +7,7 @@ import (
 type VerificationRecord struct {
 	RegNum           string
 	ManufactureNum   string
-	MIType           string
+	Modification     string
 	VerificationDate time.Time
 	ValidUntil       time.Time
 	Verifier         string

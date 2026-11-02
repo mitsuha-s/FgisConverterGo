@@ -5,68 +5,69 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 )
 
-type loader struct {
+type repo struct {
 	db *sql.DB
 }
 
-func New(db *sql.DB) *loader {
-	return &loader{db: db}
+func New(db *sql.DB) *repo {
+	return &repo{db: db}
 }
 
-func (l *loader) Load(ctx context.Context) (*domain.Config, error) {
-	signCipher, stringMode, err := l.loadConfig(ctx)
-	if errors.Is(err, sql.ErrNoRows) {
-		return nil, errors.New("В базе отсутствуют шифр организации и режим обработки показаний окружающей среды")
-	} else if err != nil {
+func (r *repo) Load(ctx context.Context) (*domain.Config, error) {
+	signCipher, stringMode, err := r.loadConfig(ctx)
+	if err != nil {
 		return nil, err
 	}
 
 	ambientMode, ok := ambientMode[stringMode]
 	if !ok {
-		return nil, errors.New("Не удалось сопоставить режим обратоки показаний окр.среды со значением")
+		return nil, errors.New("Не удалось сопоставить режим обработки показаний окр.среды со значением")
 	}
 
-	miTypes, err := l.loadMitypes(ctx)
+	miTypes, err := r.loadMitypes(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	testDevices, err := l.loadTestDevices(ctx)
+	methods, err := r.loadMethods(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	return &domain.Config{
-		SignCipher:  signCipher,
-		AmbientMode: ambientMode,
-		Mitypes:     miTypes,
-		TestDevices: testDevices,
-	}, nil
+	testDevices, err := r.loadTestDevices(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return domain.NewConfig(signCipher, miTypes, methods, testDevices, ambientMode)
 }
 
-func (l *loader) loadConfig(ctx context.Context) (signCipher, stringMode string, err error) {
+func (r *repo) loadConfig(ctx context.Context) (signCipher, stringMode string, err error) {
 	query := `SELECT signcipher, ambientmode FROM config`
 
 	var sign sql.NullString
 	var mode sql.NullString
 
-	err = l.db.QueryRowContext(ctx, query).Scan(&sign, &mode)
-	if err != nil {
-		return "", "", err
+	err = r.db.QueryRowContext(ctx, query).Scan(&sign, &mode)
+	if errors.Is(err, sql.ErrNoRows) {
+		return "", "", errors.New("В базе отсутствуют шифр организации и режим обработки показаний окружающей среды")
+	} else if err != nil {
+		return "", "", fmt.Errorf("Не удалось загрузить загрузить шифр организации и режим обработки показаний окружающей среды: %w", err)
 	}
 
 	return sign.String, mode.String, nil
 }
 
-func (l *loader) loadMitypes(ctx context.Context) (map[string]string, error) {
+func (r *repo) loadMitypes(ctx context.Context) (map[string]string, error) {
 	query := `SELECT regnum, name FROM mitypes JOIN methods ON (method = id)`
 	res := make(map[string]string)
 
-	rows, err := l.db.QueryContext(ctx, query)
+	rows, err := r.db.QueryContext(ctx, query)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Не удалось загрузить поверяемые типы СИ: %w", err)
 	}
 
 	defer rows.Close()
@@ -77,68 +78,93 @@ func (l *loader) loadMitypes(ctx context.Context) (map[string]string, error) {
 		err = rows.Scan(&miitype, &method)
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Не удалось загрузить поверяемые типы СИ: %w", err)
 		}
 
 		res[miitype] = method
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Не удалось загрузить поверяемые типы СИ: %w", err)
 	}
 
 	return res, nil
 }
 
-func (l *loader) loadTestDevices(ctx context.Context) (map[string]domain.TestDevice, error) {
-	query := `SELECT testdevices.regnum AS regnum, t1.regnum AS stopwatchregnum, t1.number AS stopwatchnumber, 
-							t2.regnum AS thermometerregnum, t2.number AS thermometernumber, 
-							t3.regnum AS thermohygrometerregnum, t3.number AS thermohygrometernumber
-							FROM testdevices 
-								LEFT JOIN testdevicemi AS t1 ON (stopwatch = t1.id) 
-								LEFT JOIN testdevicemi AS t2 ON (thermometer = t2.id) 
-								LEFT JOIN testdevicemi AS t3 ON (thermohygrometer = t3.id);`
-	res := make(map[string]domain.TestDevice)
-	rows, err := l.db.QueryContext(ctx, query)
+func (r *repo) loadTestDevices(ctx context.Context) ([]domain.TestDevice, error) {
+	query := `SELECT testdevicemi.regnum, testdevicemi.number, testdevices.regnum 
+				FROM testdevicemi RIGHT JOIN testdevices ON (testdevice = id)`
+
+	res := make([]domain.TestDevice, 0)
+
+	rows, err := r.db.QueryContext(ctx, query)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Не удалось загрузить поверочные установки: %w", err)
 	}
 
 	defer rows.Close()
 
+	instrumentsMap := make(map[string][]domain.MeasuringInstrument)
+
 	for rows.Next() {
-		var regnum sql.NullString
-		var stopwatchregnum sql.NullString
-		var stopwatchnumber sql.NullString
-		var thermometerregnum sql.NullString
-		var thermometernumber sql.NullString
-		var thermohygrometerregnum sql.NullString
-		var thermohygrometernumber sql.NullString
+		var regnum string
+		var instrumentregnum string
+		var instrumentnumber string
 
-		err = rows.Scan(&regnum, &stopwatchregnum, &stopwatchnumber, &thermometerregnum, &thermometernumber, &thermohygrometerregnum, &thermohygrometernumber)
+		err = rows.Scan(&instrumentregnum, &instrumentnumber, &regnum)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Не удалось загрузить поверочные установки: %w", err)
+		}
+		instrumentsMap[regnum] = nil
+
+		instrument, err := domain.NewMeasuringInstrument(instrumentregnum, instrumentnumber)
+		if err != nil {
+			return nil, fmt.Errorf("Не удалось загрузить доп.средство измерения поверочной установки %s %s: %w", instrumentregnum, instrumentnumber, err)
 		}
 
-		res[regnum.String] = domain.TestDevice{
-			Number: regnum.String,
-			Stopwatch: domain.MeasuringInstrument{
-				RegNum:         stopwatchregnum.String,
-				ManufactureNum: stopwatchnumber.String,
-			},
-			Thermometer: domain.MeasuringInstrument{
-				RegNum:         thermometerregnum.String,
-				ManufactureNum: thermometernumber.String,
-			},
-			Thermohygrometer: domain.MeasuringInstrument{
-				RegNum:         thermohygrometerregnum.String,
-				ManufactureNum: thermohygrometernumber.String,
-			},
-		}
+		instrumentsMap[regnum] = append(instrumentsMap[regnum], instrument)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Не удалось загрузить поверочные установки: %w", err)
+	}
+
+	for testdeviceNum, instruments := range instrumentsMap {
+		testdevice, err := domain.NewTestDevice(testdeviceNum, instruments)
+		if err != nil {
+			return nil, fmt.Errorf("Не удалось загрузить поверочную установку %s: %w", testdeviceNum, err)
+		}
+
+		res = append(res, testdevice)
+	}
+
+	return res, nil
+}
+
+func (r *repo) loadMethods(ctx context.Context) ([]string, error) {
+	var res []string
+
+	query := `SELECT name FROM methods`
+
+	rows, err := r.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, fmt.Errorf("Не удалось загрузить список разрешенных методик: %w", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var method string
+
+		err := rows.Scan(&method)
+		if err != nil {
+			return nil, fmt.Errorf("Не удалось загрузить список разрешенных методик: %w", err)
+		}
+
+		res = append(res, method)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("Не удалось загрузить список разрешенных методик: %w", err)
 	}
 
 	return res, nil

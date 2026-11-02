@@ -5,7 +5,7 @@ CREATE TABLE config (
 
 CREATE TABLE methods (
     id integer PRIMARY KEY,
-    name varchar(20)
+    name varchar(20) NOT NULL
 );
 
 CREATE TABLE mitypes (
@@ -15,18 +15,14 @@ CREATE TABLE mitypes (
 );
 
 CREATE TABLE testdevicemi (
-    id integer PRIMARY KEY,
     regnum varchar(8) NOT NULL CHECK (length(regnum) == 8),
-    number varchar(10) UNIQUE NOT NULL CHECK (length(number) > 0)
+    number varchar(10) NOT NULL CHECK (length(number) > 0),
+    testdevice integer,
+    FOREIGN KEY (testdevice) REFERENCES testdevices,
+    PRIMARY KEY (regnum, number) 
 );
 
 CREATE TABLE testdevices (
-    regnum varchar(20) UNIQUE NOT NULL CHECK (length(regnum) > 0),
-    stopwatch integer,
-    thermometer integer,
-    thermohygrometer integer,
-    FOREIGN KEY (stopwatch) REFERENCES testdevicemi,
-    FOREIGN KEY (thermometer) REFERENCES testdevicemi,
-    FOREIGN KEY (thermohygrometer) REFERENCES testdevicemi,
-    CONSTRAINT mi CHECK(stopwatch != thermohygrometer AND stopwatch != thermometer AND thermometer != thermohygrometer)
+    id integer PRIMARY KEY,
+    regnum varchar(20) UNIQUE NOT NULL CHECK (length(regnum) > 0)
 );
