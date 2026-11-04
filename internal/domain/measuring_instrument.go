@@ -15,3 +15,11 @@ func NewMeasuringInstrument(reg string, manufactureNum string) (MeasuringInstrum
 
 	return MeasuringInstrument{regNum: reg, manufactureNum: manufactureNum}, nil
 }
+
+func (i MeasuringInstrument) Regnum() string {
+	return i.regNum
+}
+
+func (i MeasuringInstrument) ManufactureNum() string {
+	return i.manufactureNum
+}

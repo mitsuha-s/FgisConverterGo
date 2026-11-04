@@ -98,7 +98,7 @@ func validateMitypes(mitypes map[string]string, methods map[string]bool) error {
 
 	for regnum, method := range mitypes {
 		if err := ValidateRegnum(regnum); err != nil {
-			return fmt.Errorf("Некорректный поверяемый тип СИ %s: %v", regnum, err)
+			return fmt.Errorf("Некорректный поверяемый тип СИ %s: %w", regnum, err)
 		}
 
 		if !methods[method] {

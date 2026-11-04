@@ -13,24 +13,24 @@ type RecordsLoader interface {
 	Load(string) ([]domain.VerificationRecord, error)
 }
 
-type Sink interface {
-	Send(string, []domain.Verification) error
+type Deliverer interface {
+	Deliver(string, []domain.Verification) error
 }
 
-type ConfigAdapter interface {
+type ConfigRepo interface {
 	Load(context.Context) (*domain.Config, error)
 }
 
 type app struct {
-	configAdapter ConfigAdapter
+	configAdapter ConfigRepo
 	logger        *log.Logger
 }
 
-func New(configAdapter ConfigAdapter, logger *log.Logger) *app {
+func New(configAdapter ConfigRepo, logger *log.Logger) *app {
 	return &app{configAdapter: configAdapter, logger: logger}
 }
 
-func (a *app) Handle(source string, recordsLoader RecordsLoader, dest string, sink Sink) error {
+func (a *app) Handle(source string, recordsLoader RecordsLoader, dest string, sink Deliverer) error {
 	var res []domain.Verification
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
@@ -59,7 +59,7 @@ func (a *app) Handle(source string, recordsLoader RecordsLoader, dest string, si
 		res = append(res, verification)
 	}
 
-	if err := sink.Send(dest, res); err != nil {
+	if err := sink.Deliver(dest, res); err != nil {
 		return err
 	}
 

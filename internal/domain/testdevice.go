@@ -28,6 +28,14 @@ func (t TestDevice) IsZero() bool {
 	return false
 }
 
+func (t TestDevice) Number() string {
+	return t.number
+}
+
+func (t TestDevice) Instruments() []MeasuringInstrument {
+	return t.instruments
+}
+
 func validateInstruments(instruments []MeasuringInstrument) error {
 	if len(instruments) == 0 {
 		return ErrInvalidData{"Не указаны доп.средства измерения"}

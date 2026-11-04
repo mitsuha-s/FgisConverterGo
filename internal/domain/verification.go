@@ -7,6 +7,7 @@ import (
 
 type Verification struct {
 	fit              bool
+	periodic         bool
 	regNum           string
 	manufactureNum   string
 	modification     string
@@ -77,6 +78,7 @@ func NewVerification(record VerificationRecord, config *Config) (Verification, e
 
 	return Verification{
 		fit:              fit,
+		periodic:         true,
 		regNum:           record.RegNum,
 		manufactureNum:   record.ManufactureNum,
 		modification:     record.Modification,
@@ -96,4 +98,64 @@ func NewVerification(record VerificationRecord, config *Config) (Verification, e
 func getRandomAmbient() (temp float64, humidity float64, pressure float64) {
 	// TODO
 	return
+}
+
+func (v *Verification) Fit() bool {
+	return v.fit
+}
+
+func (v *Verification) Periodic() bool {
+	return v.periodic
+}
+
+func (v *Verification) Regnum() string {
+	return v.regNum
+}
+
+func (v *Verification) ManufactureNum() string {
+	return v.manufactureNum
+}
+
+func (v *Verification) Modification() string {
+	return v.modification
+}
+
+func (v *Verification) Owner() string {
+	return v.owner
+}
+
+func (v *Verification) VerificationDate() time.Time {
+	return v.verificationDate
+}
+
+func (v *Verification) ValidUntil() time.Time {
+	return v.validUntil
+}
+
+func (v *Verification) Verifier() string {
+	return v.verifier
+}
+
+func (v *Verification) TestDevice() TestDevice {
+	return v.testDevice
+}
+
+func (v *Verification) Method() string {
+	return v.method
+}
+
+func (v *Verification) Temperature() float64 {
+	return v.temperature
+}
+
+func (v *Verification) Humidity() float64 {
+	return v.humidity
+}
+
+func (v *Verification) Pressure() float64 {
+	return v.pressure
+}
+
+func (v *Verification) SignCipher() string {
+	return v.signCipher
 }
