@@ -10,85 +10,86 @@ import (
 )
 
 type Applicable struct {
-	StickerNum StickerNum `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 stickerNum"`
-	SignPass   bool       `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 signPass"`
-	SignMi     bool       `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 signMi"`
+	StickerNum StickerNum `xml:"stickerNum"`
+	SignPass   bool       `xml:"signPass"`
+	SignMi     bool       `xml:"signMi"`
 }
 
 type Application struct {
-	Result []RecInfo `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 result"`
+	XMLName xml.Name  `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 application"`
+	Result  []RecInfo `xml:"result"`
 }
 
 type Briefprocedure struct {
-	Characteristics String1024 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 characteristics"`
+	Characteristics String1024 `xml:"characteristics"`
 }
 
 type Conditions struct {
-	Temperature String128 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 temperature"`
-	Pressure    String128 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 pressure"`
-	Hymidity    String128 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 hymidity"`
-	Other       String128 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 other,omitempty"`
+	Temperature String128 `xml:"temperature"`
+	Pressure    String128 `xml:"pressure"`
+	Hymidity    String128 `xml:"hymidity"`
+	Other       String128 `xml:"other,omitempty"`
 }
 
 type EtaMI struct {
-	PrimaryRec PrimaryRec `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 primaryRec,omitempty"`
-	RegNumber  String32   `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 regNumber,omitempty"`
+	PrimaryRec PrimaryRec `xml:"primaryRec,omitempty"`
+	RegNumber  String32   `xml:"regNumber,omitempty"`
 }
 
 type Gps struct {
-	Title     String128 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 title"`
-	NpeNumber String32  `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 npeNumber"`
-	Rank      String32  `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 rank"`
+	Title     String128 `xml:"title"`
+	NpeNumber String32  `xml:"npeNumber"`
+	Rank      String32  `xml:"rank"`
 }
 
 type Inapplicable struct {
-	Reasons String1024 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 reasons"`
+	Reasons String1024 `xml:"reasons"`
 }
 
 type Lps struct {
-	Title     String128 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 title"`
-	NpeNumber String32  `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 npeNumber"`
-	Rank      String32  `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 rank"`
+	Title     String128 `xml:"title"`
+	NpeNumber String32  `xml:"npeNumber"`
+	Rank      String32  `xml:"rank"`
 }
 
 type Means struct {
-	Npe     Npe     `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 npe,omitempty"`
-	Uve     Uve     `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 uve,omitempty"`
-	Ses     Ses     `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 ses,omitempty"`
-	Mieta   Mieta   `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 mieta,omitempty"`
-	Mis     Mis     `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 mis,omitempty"`
-	Reagent Reagent `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 reagent,omitempty"`
-	OMethod OMethod `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 oMethod,omitempty"`
+	Npe     Npe     `xml:"npe,omitempty"`
+	Uve     Uve     `xml:"uve,omitempty"`
+	Ses     Ses     `xml:"ses,omitempty"`
+	Mieta   Mieta   `xml:"mieta,omitempty"`
+	Mis     Mis     `xml:"mis,omitempty"`
+	Reagent Reagent `xml:"reagent,omitempty"`
+	OMethod OMethod `xml:"oMethod,omitempty"`
 }
 
 type Mi struct {
-	TypeNum        String32  `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 typeNum"`
-	ManufactureNum String128 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 manufactureNum,omitempty"`
-	InventoryNum   String128 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 inventoryNum,omitempty"`
+	TypeNum        String32  `xml:"typeNum"`
+	ManufactureNum String128 `xml:"manufactureNum,omitempty"`
+	InventoryNum   String128 `xml:"inventoryNum,omitempty"`
 }
 
 type MiInfo struct {
-	EtaMI    EtaMI    `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 etaMI,omitempty"`
-	SingleMI SingleMI `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 singleMI,omitempty"`
+	EtaMI    EtaMI    `xml:"etaMI,omitempty"`
+	SingleMI SingleMI `xml:"singleMI,omitempty"`
 }
 
 type Mieta struct {
-	Number []String32 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 number"`
+	Number []String32 `xml:"number"`
 }
 
 // May be one of application/pdf, application/msword, application/zip, image/vnd.djvu
 type Mimetype string
 
 type Mis struct {
-	Mi []Mi `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 mi"`
+	Mi []Mi `xml:"mi"`
 }
 
 type Mp struct {
-	Title String128 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 title,omitempty"`
+	Title String128 `xml:"title,omitempty"`
 }
 
 type Npe struct {
-	Number []String32 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 number"`
+	Number []String32 `xml:"number"`
 }
 
 // May be one of 1, 2, 3, 4
@@ -97,21 +98,21 @@ type OMethod int
 type PlainOrUUID string
 
 type PrimaryRec struct {
-	MitypeNumber    String32  `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 mitypeNumber"`
-	Modification    String128 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 modification"`
-	ManufactureNum  String128 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 manufactureNum"`
-	ManufactureYear time.Time `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 manufactureYear"`
-	IsOwner         bool      `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 isOwner"`
-	Gps             Gps       `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 gps,omitempty"`
-	Lps             Lps       `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 lps,omitempty"`
-	Mp              Mp        `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 mp,omitempty"`
+	MitypeNumber    String32  `xml:"mitypeNumber"`
+	Modification    String128 `xml:"modification"`
+	ManufactureNum  String128 `xml:"manufactureNum"`
+	ManufactureYear time.Time `xml:"manufactureYear"`
+	IsOwner         bool      `xml:"isOwner"`
+	Gps             Gps       `xml:"gps,omitempty"`
+	Lps             Lps       `xml:"lps,omitempty"`
+	Mp              Mp        `xml:"mp,omitempty"`
 }
 
 func (t *PrimaryRec) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	type T PrimaryRec
 	var layout struct {
 		*T
-		ManufactureYear *xsdGYear `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 manufactureYear"`
+		ManufactureYear *xsdGYear `xml:"manufactureYear"`
 	}
 	layout.T = (*T)(t)
 	layout.ManufactureYear = (*xsdGYear)(&layout.T.ManufactureYear)
@@ -121,7 +122,7 @@ func (t *PrimaryRec) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	type T PrimaryRec
 	var overlay struct {
 		*T
-		ManufactureYear *xsdGYear `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 manufactureYear"`
+		ManufactureYear *xsdGYear `xml:"manufactureYear"`
 	}
 	overlay.T = (*T)(t)
 	overlay.ManufactureYear = (*xsdGYear)(&overlay.T.ManufactureYear)
@@ -129,7 +130,7 @@ func (t *PrimaryRec) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 }
 
 type Protocol struct {
-	Content  []byte    `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 content"`
+	Content  []byte    `xml:"content"`
 	Mimetype Mimetype  `xml:"mimetype,attr"`
 	Filename String128 `xml:"filename,attr"`
 }
@@ -138,7 +139,7 @@ func (t *Protocol) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	type T Protocol
 	var layout struct {
 		*T
-		Content *xsdBase64Binary `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 content"`
+		Content *xsdBase64Binary `xml:"content"`
 	}
 	layout.T = (*T)(t)
 	layout.Content = (*xsdBase64Binary)(&layout.T.Content)
@@ -148,7 +149,7 @@ func (t *Protocol) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	type T Protocol
 	var overlay struct {
 		*T
-		Content *xsdBase64Binary `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 content"`
+		Content *xsdBase64Binary `xml:"content"`
 	}
 	overlay.T = (*T)(t)
 	overlay.Content = (*xsdBase64Binary)(&overlay.T.Content)
@@ -156,36 +157,36 @@ func (t *Protocol) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 }
 
 type Reagent struct {
-	Number []String32 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 number"`
+	Number []String32 `xml:"number"`
 }
 
 // Тип данных: запись о результатах поверки СИ
 type RecInfo struct {
-	MiInfo         MiInfo         `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 miInfo"`
-	SignCipher     SignCipher     `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 signCipher"`
-	MiOwner        String512      `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 miOwner,omitempty"`
-	VrfDate        time.Time      `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 vrfDate"`
-	ValidDate      time.Time      `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 validDate,omitempty"`
-	Type           Type           `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 type"`
-	Calibration    bool           `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 calibration"`
-	Applicable     Applicable     `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 applicable,omitempty"`
-	Inapplicable   Inapplicable   `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 inapplicable,omitempty"`
-	DocTitle       String128      `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 docTitle"`
-	Metrologist    String128      `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 metrologist,omitempty"`
-	Means          Means          `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 means"`
-	Conditions     Conditions     `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 conditions"`
-	Structure      String1024     `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 structure,omitempty"`
-	Briefprocedure Briefprocedure `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 brief_procedure,omitempty"`
-	Additionalinfo String1024     `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 additional_info,omitempty"`
-	Protocol       Protocol       `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 protocol,omitempty"`
+	MiInfo         MiInfo         `xml:"miInfo"`
+	SignCipher     SignCipher     `xml:"signCipher"`
+	MiOwner        String512      `xml:"miOwner,omitempty"`
+	VrfDate        time.Time      `xml:"vrfDate"`
+	ValidDate      time.Time      `xml:"validDate,omitempty"`
+	Type           Type           `xml:"type"`
+	Calibration    bool           `xml:"calibration"`
+	Applicable     Applicable     `xml:"applicable,omitempty"`
+	Inapplicable   Inapplicable   `xml:"inapplicable,omitempty"`
+	DocTitle       String128      `xml:"docTitle"`
+	Metrologist    String128      `xml:"metrologist,omitempty"`
+	Means          Means          `xml:"means"`
+	Conditions     Conditions     `xml:"conditions"`
+	Structure      String1024     `xml:"structure,omitempty"`
+	Briefprocedure Briefprocedure `xml:"brief_procedure,omitempty"`
+	Additionalinfo String1024     `xml:"additional_info,omitempty"`
+	Protocol       Protocol       `xml:"protocol,omitempty"`
 }
 
 func (t *RecInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	type T RecInfo
 	var layout struct {
 		*T
-		VrfDate   *xsdDate `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 vrfDate"`
-		ValidDate *xsdDate `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 validDate,omitempty"`
+		VrfDate   *xsdDate `xml:"vrfDate"`
+		ValidDate *xsdDate `xml:"validDate,omitempty"`
 	}
 	layout.T = (*T)(t)
 	layout.VrfDate = (*xsdDate)(&layout.T.VrfDate)
@@ -196,8 +197,8 @@ func (t *RecInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	type T RecInfo
 	var overlay struct {
 		*T
-		VrfDate   *xsdDate `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 vrfDate"`
-		ValidDate *xsdDate `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 validDate,omitempty"`
+		VrfDate   *xsdDate `xml:"vrfDate"`
+		ValidDate *xsdDate `xml:"validDate,omitempty"`
 	}
 	overlay.T = (*T)(t)
 	overlay.VrfDate = (*xsdDate)(&overlay.T.VrfDate)
@@ -206,17 +207,17 @@ func (t *RecInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 }
 
 type Se struct {
-	TypeNum         String128  `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 typeNum"`
-	ManufactureYear time.Time  `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 manufactureYear"`
-	ManufactureNum  String128  `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 manufactureNum,omitempty"`
-	MetroChars      String1024 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 metroChars,omitempty"`
+	TypeNum         String128  `xml:"typeNum"`
+	ManufactureYear time.Time  `xml:"manufactureYear"`
+	ManufactureNum  String128  `xml:"manufactureNum,omitempty"`
+	MetroChars      String1024 `xml:"metroChars,omitempty"`
 }
 
 func (t *Se) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	type T Se
 	var layout struct {
 		*T
-		ManufactureYear *xsdGYear `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 manufactureYear"`
+		ManufactureYear *xsdGYear `xml:"manufactureYear"`
 	}
 	layout.T = (*T)(t)
 	layout.ManufactureYear = (*xsdGYear)(&layout.T.ManufactureYear)
@@ -226,7 +227,7 @@ func (t *Se) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	type T Se
 	var overlay struct {
 		*T
-		ManufactureYear *xsdGYear `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 manufactureYear"`
+		ManufactureYear *xsdGYear `xml:"manufactureYear"`
 	}
 	overlay.T = (*T)(t)
 	overlay.ManufactureYear = (*xsdGYear)(&overlay.T.ManufactureYear)
@@ -234,27 +235,27 @@ func (t *Se) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 }
 
 type Ses struct {
-	Se []Se `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 se"`
+	Se []Se `xml:"se"`
 }
 
 // Must match the pattern [А-Я]{1,3}
 type SignCipher string
 
 type SingleMI struct {
-	MitypeNumber    String32  `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 mitypeNumber,omitempty"`
-	CrtmitypeTitle  String512 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 crtmitypeTitle,omitempty"`
-	MilmitypeTitle  String512 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 milmitypeTitle,omitempty"`
-	ManufactureNum  String128 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 manufactureNum,omitempty"`
-	InventoryNum    String128 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 inventoryNum,omitempty"`
-	ManufactureYear time.Time `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 manufactureYear,omitempty"`
-	Modification    String128 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 modification"`
+	MitypeNumber    String32  `xml:"mitypeNumber,omitempty"`
+	CrtmitypeTitle  String512 `xml:"crtmitypeTitle,omitempty"`
+	MilmitypeTitle  String512 `xml:"milmitypeTitle,omitempty"`
+	ManufactureNum  String128 `xml:"manufactureNum,omitempty"`
+	InventoryNum    String128 `xml:"inventoryNum,omitempty"`
+	ManufactureYear time.Time `xml:"manufactureYear,omitempty"`
+	Modification    String128 `xml:"modification"`
 }
 
 func (t *SingleMI) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	type T SingleMI
 	var layout struct {
 		*T
-		ManufactureYear *xsdGYear `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 manufactureYear,omitempty"`
+		ManufactureYear *xsdGYear `xml:"manufactureYear,omitempty"`
 	}
 	layout.T = (*T)(t)
 	layout.ManufactureYear = (*xsdGYear)(&layout.T.ManufactureYear)
@@ -264,7 +265,7 @@ func (t *SingleMI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	type T SingleMI
 	var overlay struct {
 		*T
-		ManufactureYear *xsdGYear `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 manufactureYear,omitempty"`
+		ManufactureYear *xsdGYear `xml:"manufactureYear,omitempty"`
 	}
 	overlay.T = (*T)(t)
 	overlay.ManufactureYear = (*xsdGYear)(&overlay.T.ManufactureYear)
@@ -293,7 +294,7 @@ type Type int
 type UUID string
 
 type Uve struct {
-	Number []String32 `xml:"urn://fgis-arshin.gost.ru/module-verifications/import/2020-06-19 number"`
+	Number []String32 `xml:"number"`
 }
 
 type xsdBase64Binary []byte

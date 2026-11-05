@@ -159,3 +159,57 @@ func (v *Verification) Pressure() float64 {
 func (v *Verification) SignCipher() string {
 	return v.signCipher
 }
+
+func NewTestVirifications() []Verification {
+	res := []Verification{
+		Verification{
+			fit:              true,
+			periodic:         true,
+			regNum:           "12345-67",
+			manufactureNum:   "1233",
+			modification:     "TEST-15",
+			owner:            "ТЕСТОВОЕ ЛИЦО",
+			verificationDate: time.Now(),
+			validUntil:       time.Date(2026, time.December, 31, 0, 0, 0, 0, time.Local),
+			verifier:         "Тестов Т.Т.",
+			testDevice: TestDevice{
+				number: "1234.3P.456",
+				instruments: []MeasuringInstrument{
+					MeasuringInstrument{
+						regNum:         "34568-90",
+						manufactureNum: "1234654",
+					},
+				},
+			},
+			method:     "МИ 2015-2019",
+			signCipher: "ДГХ",
+		},
+		Verification{
+			fit:              false,
+			periodic:         true,
+			regNum:           "12345-67",
+			manufactureNum:   "НЕ ГОДЕН",
+			modification:     "TEST-15",
+			owner:            "ТЕСТОВОЕ ЛИЦО",
+			verificationDate: time.Now(),
+			validUntil:       time.Date(2026, time.December, 31, 0, 0, 0, 0, time.Local),
+			verifier:         "Тестов Т.Т.",
+			testDevice: TestDevice{
+				number: "1234.3P.456",
+				instruments: []MeasuringInstrument{
+					MeasuringInstrument{
+						regNum:         "34568-90",
+						manufactureNum: "1234654",
+					},
+				},
+			},
+			method:      "МИ 2015-2019",
+			signCipher:  "ДГХ",
+			temperature: 35,
+			humidity:    46,
+			pressure:    100.2,
+		},
+	}
+
+	return res
+}

@@ -2,13 +2,25 @@ package xml
 
 import (
 	"arshin/internal/domain"
+	"encoding/xml"
+	"os"
 	"strconv"
 )
 
 type converter struct{}
 
 func (c converter) Deliver(dst string, verifications []domain.Verification) error {
+	file, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+
 	application := toApplication(verifications)
+	encoder := xml.NewEncoder(file)
+
+	if err := encoder.Encode(application); err != nil {
+		return err
+	}
 
 	return nil
 }
