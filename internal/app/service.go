@@ -38,14 +38,17 @@ func (a *Service) Handle(source string, recordsLoader RecordsLoader, dest string
 	config, err := a.configAdapter.GetConfig(context.Background())
 	var configErr domain.ErrInvalidData
 	if errors.As(err, &configErr) {
-		return fmt.Errorf("Не удалось загрузить конфиг: %v", err)
+		return fmt.Errorf("Не удалось загрузить конфиг: %w", err)
 	} else if err != nil {
-		return fmt.Errorf("Ошибка приложения. Не удалось загрузить конфиг")
+		return err
 	}
 
 	records, err := recordsLoader.Load(source)
 	if err != nil {
 		return err
+	}
+	if len(records) == 0 {
+		return fmt.Errorf("%w. Проверьте порядок и количество столбов или формат файла", domain.ErrNoRecords)
 	}
 
 	for _, record := range records {
@@ -58,8 +61,10 @@ func (a *Service) Handle(source string, recordsLoader RecordsLoader, dest string
 		res = append(res, verification)
 	}
 
-	if err := sink.Deliver(dest, res); err != nil {
-		return err
+	if len(res) != 0 {
+		if err := sink.Deliver(dest, res); err != nil {
+			return err
+		}
 	}
 
 	return nil

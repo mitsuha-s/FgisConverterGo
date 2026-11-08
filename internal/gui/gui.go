@@ -4,6 +4,7 @@ import (
 	appl "arshin/internal/app"
 	"arshin/internal/domain"
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"regexp"
@@ -143,7 +144,13 @@ func (w *Window) start() {
 
 	go func() {
 		if err := w.app.Handle(w.inputFile, w.loader, dst, deliverer); err != nil {
-			dialog.ShowError(err, w.window)
+			var dataErr domain.ErrInvalidData
+			if errors.Is(err, domain.ErrNoRecords) || errors.As(err, &dataErr) {
+				dialog.ShowError(err, w.window)
+			} else {
+				// dialog.ShowError(errors.New("Внутренняя ошибка"), w.window)
+				dialog.ShowError(err, w.window)
+			}
 		}
 	}()
 }

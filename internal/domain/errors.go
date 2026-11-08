@@ -1,5 +1,7 @@
 package domain
 
+import "errors"
+
 type ErrInvalidData struct {
 	message string
 }
@@ -7,3 +9,5 @@ type ErrInvalidData struct {
 func (e ErrInvalidData) Error() string {
 	return e.message
 }
+
+var ErrNoRecords = errors.New("Не найдено ни одной записи о поверке")

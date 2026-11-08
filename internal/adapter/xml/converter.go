@@ -3,6 +3,7 @@ package xml
 import (
 	"arshin/internal/domain"
 	"encoding/xml"
+	"errors"
 	"os"
 	"strconv"
 )
@@ -14,6 +15,10 @@ func NewConverter() converter {
 }
 
 func (c converter) Deliver(dst string, verifications []domain.Verification) error {
+	if len(verifications) == 0 {
+		return errors.New("Пустой список поверок")
+	}
+
 	file, err := os.Create(dst)
 	if err != nil {
 		return err
