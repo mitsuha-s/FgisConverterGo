@@ -148,8 +148,7 @@ func (w *Window) start() {
 			if errors.Is(err, domain.ErrNoRecords) || errors.As(err, &dataErr) {
 				dialog.ShowError(err, w.window)
 			} else {
-				// dialog.ShowError(errors.New("Внутренняя ошибка"), w.window)
-				dialog.ShowError(err, w.window)
+				dialog.ShowError(errors.New("Внутренняя ошибка"), w.window)
 			}
 		}
 	}()
