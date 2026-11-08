@@ -1,4 +1,4 @@
-package xls
+package xlsx
 
 import (
 	"arshin/internal/domain"
@@ -18,7 +18,7 @@ type parser struct {
 	opts   ParseOptions
 }
 
-func New(logger *log.Logger, opts ...ParseOptions) *parser {
+func NewParser(logger *log.Logger, opts ...ParseOptions) *parser {
 	res := &parser{logger: logger}
 
 	if len(opts) > 0 {

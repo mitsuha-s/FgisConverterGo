@@ -1,4 +1,4 @@
-package xls
+package xlsx
 
 type ParseError struct {
 	message string

@@ -1,4 +1,4 @@
-package xls
+package xlsx
 
 type ParseOptions struct {
 	ParseAmbient bool

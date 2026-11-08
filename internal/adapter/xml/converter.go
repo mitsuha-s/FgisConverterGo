@@ -9,6 +9,10 @@ import (
 
 type converter struct{}
 
+func NewConverter() converter {
+	return converter{}
+}
+
 func (c converter) Deliver(dst string, verifications []domain.Verification) error {
 	file, err := os.Create(dst)
 	if err != nil {

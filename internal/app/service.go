@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"time"
+	// "time"
 )
 
 type RecordsLoader interface {
@@ -17,26 +17,25 @@ type Deliverer interface {
 	Deliver(string, []domain.Verification) error
 }
 
-type ConfigRepo interface {
-	Load(context.Context) (*domain.Config, error)
+type DBrepo interface {
+	GetConfig(context.Context) (*domain.Config, error)
 }
 
-type app struct {
-	configAdapter ConfigRepo
+type Service struct {
+	configAdapter DBrepo
 	logger        *log.Logger
 }
 
-func New(configAdapter ConfigRepo, logger *log.Logger) *app {
-	return &app{configAdapter: configAdapter, logger: logger}
+func New(configAdapter DBrepo, logger *log.Logger) *Service {
+	return &Service{configAdapter: configAdapter, logger: logger}
 }
 
-func (a *app) Handle(source string, recordsLoader RecordsLoader, dest string, sink Deliverer) error {
+func (a *Service) Handle(source string, recordsLoader RecordsLoader, dest string, sink Deliverer) error {
 	var res []domain.Verification
+	// ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	// defer cancel()
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
-	config, err := a.configAdapter.Load(ctx)
+	config, err := a.configAdapter.GetConfig(context.Background())
 	var configErr domain.ErrInvalidData
 	if errors.As(err, &configErr) {
 		return fmt.Errorf("Не удалось загрузить конфиг: %v", err)

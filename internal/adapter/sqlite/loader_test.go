@@ -7,6 +7,7 @@ import (
 	"errors"
 	"log"
 	"testing"
+	"time"
 
 	_ "github.com/gwenn/gosqlite"
 )
@@ -17,10 +18,11 @@ func TestLoader(t *testing.T) {
 		t.Fatal(err)
 	}
 	repo := New(db)
-	res, err := repo.Load(context.Background())
+	ctx, _ := context.WithTimeout(context.Background(), time.Second*5)
+	res, err := repo.GetConfig(ctx)
 	var errdata domain.ErrInvalidData
 	if errors.As(err, &errdata) {
 		t.Fatal(res, err)
 	}
-	log.Println(res)
+	log.Println(res, err)
 }

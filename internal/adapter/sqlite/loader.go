@@ -16,7 +16,7 @@ func New(db *sql.DB) *repo {
 	return &repo{db: db}
 }
 
-func (r *repo) Load(ctx context.Context) (*domain.Config, error) {
+func (r *repo) GetConfig(ctx context.Context) (*domain.Config, error) {
 	signCipher, stringMode, err := r.loadConfig(ctx)
 	if err != nil {
 		return nil, err
